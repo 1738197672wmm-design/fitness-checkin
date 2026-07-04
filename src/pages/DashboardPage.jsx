@@ -1,35 +1,69 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { initAllAnimations } from '../utils/animations'
 import { useAuth } from '../contexts/AuthContext'
 import { useCheckin } from '../hooks/useCheckin'
+import { USERS } from '../data/users'
 import './DashboardPage.css'
 
 function DashboardPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
   const { user } = useAuth()
-  const { todayCheckin, userCheckins, addCheckin, getWeekStats, getFeed } = useCheckin()
+  const { loading, todayCheckin, userCheckins, addCheckin, getWeekStats, getFeed } = useCheckin()
   const [activeTab, setActiveTab] = useState('checkin')
   const [checkinForm, setCheckinForm] = useState({ exerciseName: '', exerciseCount: 1, calories: 0, duration: 0 })
+  const [weekStats, setWeekStats] = useState({ exercises: 0, calories: 0, duration: 0 })
+  const [feedItems, setFeedItems] = useState([])
 
-  const weekStats = getWeekStats(user?.id)
+  useEffect(() => {
+    if (!user) return
+    getWeekStats(user.id).then(setWeekStats)
+    setFeedItems(getFeed().map(item => ({
+      ...item,
+      userInfo: USERS.find(u => u.id === item.userId)
+    })))
+  }, [user, getWeekStats, getFeed])
 
-  const handleAddCheckin = (e) => {
+  const handleAddCheckin = async (e) => {
     e.preventDefault()
     if (!checkinForm.exerciseName.trim()) return
-    addCheckin(
+    await addCheckin(
       checkinForm.exerciseName.trim(),
       Number(checkinForm.exerciseCount) || 1,
       Number(checkinForm.calories) || 0,
       Number(checkinForm.duration) || 0
     )
     setCheckinForm({ exerciseName: '', exerciseCount: 1, calories: 0, duration: 0 })
+    // Refresh week stats and feed
+    if (user) {
+      getWeekStats(user.id).then(setWeekStats)
+      setFeedItems(getFeed().map(item => ({
+        ...item,
+        userInfo: USERS.find(u => u.id === item.userId)
+      })))
+    }
   }
 
-  const quickCheckin = (exerciseName, exerciseCount, calories, duration) => {
-    addCheckin(exerciseName, exerciseCount, calories, duration)
+  const quickCheckin = async (exerciseName, exerciseCount, calories, duration) => {
+    await addCheckin(exerciseName, exerciseCount, calories, duration)
+    if (user) {
+      getWeekStats(user.id).then(setWeekStats)
+      setFeedItems(getFeed().map(item => ({
+        ...item,
+        userInfo: USERS.find(u => u.id === item.userId)
+      })))
+    }
   }
 
-  const feedItems = getFeed()
+  if (loading) {
+    return (
+      <div className='dashboard-page'>
+        <div className='container' style={{ textAlign: 'center', padding: '100px 0' }}>
+          <div className='loader-ring' style={{ margin: '0 auto' }}></div>
+          <p style={{ color: 'var(--text-muted)', marginTop: 16 }}>加载中...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className='dashboard-page'>

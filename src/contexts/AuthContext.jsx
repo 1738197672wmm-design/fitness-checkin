@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { USERS } from '../data/users'
+﻿import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const AuthContext = createContext(null)
+const API_BASE = '/api'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -15,15 +15,34 @@ export function AuthProvider({ children }) {
     setLoading(false)
   }, [])
 
-  const login = useCallback((username, password) => {
-    const found = USERS.find(u => u.username === username && u.password === password)
-    if (found) {
-      const { password: _, ...safe } = found
-      setUser(safe)
-      localStorage.setItem('fitness_user', JSON.stringify(safe))
-      return true
+  const login = useCallback(async (username, password) => {
+    try {
+      const res = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      const data = await res.json()
+
+      if (data.success && data.user) {
+        setUser(data.user)
+        localStorage.setItem('fitness_user', JSON.stringify(data.user))
+
+        // Initialize user data on first login
+        try {
+          await fetch(`${API_BASE}/setup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: data.user.id })
+          })
+        } catch {}
+
+        return true
+      }
+      return false
+    } catch {
+      return false
     }
-    return false
   }, [])
 
   const logout = useCallback(() => {
