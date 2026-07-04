@@ -75,28 +75,28 @@ function DashboardPage() {
     )
   }
   const typeLabel = exerciseType === 'cardio' ? '??????' : '??????'
-  const typeIcon = exerciseType === 'cardio' ? '\u2764\ufe0f' : '\U0001f4aa'
+  const typeIcon = exerciseType === 'cardio' ? '\u2764\ufe0f' : '💪'
   return (
     <div className='dashboard-page'>
       <div className='container'>
         <div className='dashboard-welcome'>
           <div className='welcome-avatar'>{user?.avatar}</div>
           <div>
-            <h2 className='welcome-title'>???{user?.displayName} \U0001f4aa</h2>
+            <h2 className='welcome-title'>???{user?.displayName} 💪</h2>
             <p className='welcome-subtitle'>??????????</p>
           </div>
         </div>
         <div className='dashboard-today'>
           <BorderGlow borderRadius={14} glowRadius={25} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
             <div className='today-card'>
-              <div className='today-icon'>{todayCheckin?.exerciseType === 'cardio' ? '\u2764\ufe0f' : '\U0001f4aa'}</div>
+              <div className='today-icon'>{todayCheckin?.exerciseType === 'cardio' ? '\u2764\ufe0f' : '💪'}</div>
               <div className='today-value'>{todayCheckin?.exerciseType === 'cardio' ? '??' : todayCheckin?.exerciseType === 'strength' ? '??' : '-'}</div>
               <div className='today-label'>??????</div>
             </div>
           </BorderGlow>
           <BorderGlow borderRadius={14} glowRadius={25} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
             <div className='today-card'>
-              <div className='today-icon'>\U0001f525</div>
+              <div className='today-icon'>🔥</div>
               <div className='today-value'>{todayCheckin?.calories || 0}</div>
               <div className='today-label'>???? (kcal)</div>
             </div>
@@ -128,7 +128,7 @@ function DashboardPage() {
                     className={'type-btn' + (exerciseType === 'strength' ? ' selected' : '')}
                     onClick={() => selectType('strength')}
                   >
-                    <span className='type-icon'>\U0001f4aa</span>
+                    <span className='type-icon'>💪</span>
                     <span className='type-name'>??????</span>
                     <span className='type-desc'>???????????...</span>
                   </button>
@@ -231,7 +231,7 @@ function DashboardPage() {
                 </div>
                 {userCheckins.map((checkin, i) => {
                   const isToday = checkin.date === new Date().toISOString().split('T')[0]
-                  const ct = checkin.exerciseType === 'cardio' ? '\u2764\ufe0f ??' : '\U0001f4aa ??'
+                  const ct = checkin.exerciseType === 'cardio' ? '\u2764\ufe0f ??' : '💪 ??'
                   return (
                     <div key={i} className={'table-row' + (isToday ? ' today' : '')}>
                       <span className='cell-date'>{checkin.date}{isToday ? ' (??)' : ''}</span>
@@ -244,7 +244,7 @@ function DashboardPage() {
               </div>
             ) : (
               <div className='exercises-empty'>
-                <div className='empty-icon'>\U0001f4dd</div>
+                <div className='empty-icon'>📝</div>
                 <h3>???????</h3>
                 <p>???????????</p>
               </div>
@@ -264,14 +264,14 @@ function DashboardPage() {
                     </div>
                     <p className='feed-text'>
                       ??? <strong>{item.exerciseName}</strong>
-                      {' ? '}\U0001f525 {item.calories} kcal ? \u23f1\ufe0f {item.duration} min
+                      {' ? '}🔥 {item.calories} kcal ? \u23f1\ufe0f {item.duration} min
                     </p>
                   </div>
                 </div>
               )
             }) : (
               <div className='exercises-empty'>
-                <div className='empty-icon'>\U0001f465</div>
+                <div className='empty-icon'>👥</div>
                 <h3>??????</h3>
                 <p>???????????</p>
               </div>

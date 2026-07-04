@@ -7,14 +7,14 @@ import { useCheckin } from '../hooks/useCheckin'
 import exercisesData from '../data/exercises.json'
 import './HeroPage.css'
 const BODY_PARTS = [
-  { key: 'chest', label: '\u80f8\u90e8', icon: '\U0001f4aa', count: 0 },
-  { key: 'back', label: '\u80cc\u90e8', icon: '\U0001f3cb\ufe0f', count: 0 },
-  { key: 'shoulders', label: '\u80a9\u90e8', icon: '\U0001f9be', count: 0 },
-  { key: 'upper arms', label: '\u624b\u81c2', icon: '\U0001f4aa', count: 0 },
-  { key: 'upper legs', label: '\u5927\u817f', icon: '\U0001f9b5', count: 0 },
-  { key: 'lower legs', label: '\u5c0f\u817f', icon: '\U0001f9b6', count: 0 },
-  { key: 'waist', label: '\u8170\u8179', icon: '\U0001f9d8', count: 0 },
-  { key: 'cardio', label: '\u6709\u6c27', icon: '\U0001f3c3', count: 0 },
+  { key: 'chest', label: '\u80f8\u90e8', icon: '💪', count: 0 },
+  { key: 'back', label: '\u80cc\u90e8', icon: '🏋\ufe0f', count: 0 },
+  { key: 'shoulders', label: '\u80a9\u90e8', icon: '🦾', count: 0 },
+  { key: 'upper arms', label: '\u624b\u81c2', icon: '💪', count: 0 },
+  { key: 'upper legs', label: '\u5927\u817f', icon: '🦵', count: 0 },
+  { key: 'lower legs', label: '\u5c0f\u817f', icon: '🦶', count: 0 },
+  { key: 'waist', label: '\u8170\u8179', icon: '🧘', count: 0 },
+  { key: 'cardio', label: '\u6709\u6c27', icon: '🏃', count: 0 },
 ];
 BODY_PARTS.forEach(bp => {
   bp.count = exercisesData.filter(e => e.body_part === bp.key).length
