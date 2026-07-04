@@ -1,0 +1,17 @@
+﻿node_modules
+dist
+.vite
+*.local
+.env
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.pem
+chrome-profile
+npm-cache
+npm_mod
+tmp
+vite-err.txt
+vite-out.txt
