@@ -9,7 +9,7 @@ export async function onRequest(context) {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
 
     const { results } = await env.DB.prepare(
-      `SELECT userId, COALESCE(SUM(exerciseCount),0) as exercises, COALESCE(SUM(calories),0) as calories, COALESCE(SUM(duration),0) as duration
+      `SELECT userId, COALESCE(SUM(calories),0) as calories, COALESCE(SUM(duration),0) as duration
        FROM checkins WHERE date >= ? GROUP BY userId ORDER BY ${metric} DESC`
     ).bind(monthStart).all()
 

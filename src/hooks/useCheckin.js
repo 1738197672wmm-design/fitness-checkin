@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 
 const API_BASE = '/api'
@@ -15,7 +15,7 @@ export function useCheckin() {
   const fetchCheckins = useCallback(async () => {
     if (!user) return
     try {
-      const res = await fetch(`${API_BASE}/checkins?userId=${user.id}`)
+      const res = await fetch(API_BASE + '/checkins?userId=' + user.id)
       const data = await res.json()
       setCheckins(data.checkins || [])
     } catch (err) {
@@ -26,13 +26,9 @@ export function useCheckin() {
   // Fetch feed
   const fetchFeed = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/feed`)
+      const res = await fetch(API_BASE + '/feed')
       const data = await res.json()
-      const feedWithUser = (data.feed || []).map(item => ({
-        ...item,
-        userInfo: null // will be resolved by displayName from user list
-      }))
-      setFeed(feedWithUser)
+      setFeed(data.feed || [])
     } catch (err) {
       console.error('Failed to fetch feed:', err)
     }
@@ -46,17 +42,14 @@ export function useCheckin() {
     }
   }, [user, fetchCheckins, fetchFeed])
 
-  const addCheckin = useCallback(async (exerciseName, exerciseCount, calories, duration) => {
+  const addCheckin = useCallback(async (exerciseType, calories, duration) => {
     if (!user) return
-
     try {
-      await fetch(`${API_BASE}/checkin`, {
+      await fetch(API_BASE + '/checkin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, exerciseCount, calories, duration })
+        body: JSON.stringify({ userId: user.id, exerciseType, calories, duration })
       })
-
-      // Refetch data
       await Promise.all([fetchCheckins(), fetchFeed()])
     } catch (err) {
       console.error('Failed to add checkin:', err)
@@ -68,30 +61,30 @@ export function useCheckin() {
   , [checkins, todayStr])
 
   const userCheckins = useMemo(() =>
-    checkins.sort((a, b) => new Date(b.date) - new Date(a.date))
+    [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date))
   , [checkins])
 
-  const getMonthStats = useCallback(async (userId, year, month) => {
+  const getMonthStats = useCallback(async (userId) => {
     try {
-      const res = await fetch(`${API_BASE}/stats?userId=${userId}&range=month`)
+      const res = await fetch(API_BASE + '/stats?userId=' + userId + '&range=month')
       return await res.json()
     } catch {
-      return { exercises: 0, calories: 0, duration: 0 }
+      return { calories: 0, duration: 0 }
     }
   }, [])
 
   const getWeekStats = useCallback(async (userId) => {
     try {
-      const res = await fetch(`${API_BASE}/stats?userId=${userId}&range=week`)
+      const res = await fetch(API_BASE + '/stats?userId=' + userId + '&range=week')
       return await res.json()
     } catch {
-      return { exercises: 0, calories: 0, duration: 0 }
+      return { calories: 0, duration: 0 }
     }
   }, [])
 
   const getAllMonthRankings = useCallback(async (metric) => {
     try {
-      const res = await fetch(`${API_BASE}/rankings?metric=${metric}`)
+      const res = await fetch(API_BASE + '/rankings?metric=' + metric)
       const data = await res.json()
       return data.rankings || []
     } catch {

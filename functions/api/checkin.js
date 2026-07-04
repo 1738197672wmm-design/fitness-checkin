@@ -1,4 +1,4 @@
-﻿// POST /api/checkin - 添加/更新今日打卡
+// POST /api/checkin - ??/??????
 export async function onRequest(context) {
   const { request, env } = context
   if (request.method !== 'POST') {
@@ -6,7 +6,7 @@ export async function onRequest(context) {
   }
 
   try {
-    const { userId, exerciseCount, calories, duration } = await request.json()
+    const { userId, exerciseType, calories, duration } = await request.json()
     if (!userId) {
       return new Response(JSON.stringify({ error: 'userId required' }), {
         status: 400, headers: { 'Content-Type': 'application/json' }
@@ -14,6 +14,7 @@ export async function onRequest(context) {
     }
 
     const today = new Date().toISOString().split('T')[0]
+    const eType = exerciseType === 'cardio' ? 'cardio' : 'strength'
 
     // Check if already checked in today
     const existing = await env.DB.prepare(
@@ -21,22 +22,23 @@ export async function onRequest(context) {
     ).bind(userId, today).first()
 
     if (existing) {
-      // Update existing
+      // Update existing - accumulate calories and duration
       await env.DB.prepare(
-        'UPDATE checkins SET exerciseCount = exerciseCount + ?, calories = calories + ?, duration = duration + ? WHERE id = ?'
-      ).bind(exerciseCount || 0, calories || 0, duration || 0, existing.id).run()
+        'UPDATE checkins SET calories = calories + ?, duration = duration + ? WHERE id = ?'
+      ).bind(calories || 0, duration || 0, existing.id).run()
     } else {
       // Insert new
       await env.DB.prepare(
-        'INSERT INTO checkins (userId, date, exerciseCount, calories, duration) VALUES (?, ?, ?, ?, ?)'
-      ).bind(userId, today, exerciseCount || 0, calories || 0, duration || 0).run()
+        'INSERT INTO checkins (userId, date, exerciseType, calories, duration) VALUES (?, ?, ?, ?, ?)'
+      ).bind(userId, today, eType, calories || 0, duration || 0).run()
     }
 
     // Add to feed
     const now = new Date().toISOString()
+    const typeLabel = eType === 'cardio' ? '有氧心率训练' : '无氧力量训练'
     await env.DB.prepare(
       'INSERT INTO feed (userId, type, exerciseName, calories, duration, timestamp) VALUES (?, ?, ?, ?, ?, ?)'
-    ).bind(userId, 'checkin', '', calories || 0, duration || 0, now).run()
+    ).bind(userId, 'checkin', typeLabel, calories || 0, duration || 0, now).run()
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { 'Content-Type': 'application/json' }

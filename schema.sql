@@ -2,7 +2,7 @@
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   userId TEXT NOT NULL,
   date TEXT NOT NULL,
-  exerciseCount INTEGER DEFAULT 0,
+  exerciseType TEXT DEFAULT 'strength',
   calories INTEGER DEFAULT 0,
   duration INTEGER DEFAULT 0,
   createdAt TEXT DEFAULT (datetime('now')),

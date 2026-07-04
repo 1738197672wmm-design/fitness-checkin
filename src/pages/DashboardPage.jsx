@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { initAllAnimations } from '../utils/animations'
 import { useAuth } from '../contexts/AuthContext'
 import { useCheckin } from '../hooks/useCheckin'
@@ -9,9 +9,17 @@ function DashboardPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
   const { user } = useAuth()
   const { loading, todayCheckin, userCheckins, addCheckin, getWeekStats, getFeed } = useCheckin()
+
+  // Step form state
+  const [step, setStep] = useState(1)  // 1=type, 2=duration, 3=calories
+  const [exerciseType, setExerciseType] = useState('')
+  const [duration, setDuration] = useState('')
+  const [calories, setCalories] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  // Data state
   const [activeTab, setActiveTab] = useState('checkin')
-  const [checkinForm, setCheckinForm] = useState({ exerciseName: '', exerciseCount: 1, calories: 0, duration: 0 })
-  const [weekStats, setWeekStats] = useState({ exercises: 0, calories: 0, duration: 0 })
+  const [weekStats, setWeekStats] = useState({ calories: 0, duration: 0 })
   const [feedItems, setFeedItems] = useState([])
 
   useEffect(() => {
@@ -23,17 +31,33 @@ function DashboardPage() {
     })))
   }, [user, getWeekStats, getFeed])
 
-  const handleAddCheckin = async (e) => {
+  const selectType = (type) => {
+    setExerciseType(type)
+    setStep(2)
+  }
+
+  const submitDuration = (e) => {
     e.preventDefault()
-    if (!checkinForm.exerciseName.trim()) return
-    await addCheckin(
-      checkinForm.exerciseName.trim(),
-      Number(checkinForm.exerciseCount) || 1,
-      Number(checkinForm.calories) || 0,
-      Number(checkinForm.duration) || 0
-    )
-    setCheckinForm({ exerciseName: '', exerciseCount: 1, calories: 0, duration: 0 })
-    // Refresh week stats and feed
+    const val = Number(duration)
+    if (!val || val <= 0) return
+    setStep(3)
+  }
+
+  const submitCalories = async (e) => {
+    e.preventDefault()
+    const cal = Number(calories)
+    const dur = Number(duration)
+    if (cal < 0) return
+    if (dur <= 0) return
+    setSubmitting(true)
+    await addCheckin(exerciseType, cal, dur)
+    setSubmitting(false)
+    // Reset form
+    setStep(1)
+    setExerciseType('')
+    setDuration('')
+    setCalories('')
+    // Refresh stats and feed
     if (user) {
       getWeekStats(user.id).then(setWeekStats)
       setFeedItems(getFeed().map(item => ({
@@ -43,15 +67,11 @@ function DashboardPage() {
     }
   }
 
-  const quickCheckin = async (exerciseName, exerciseCount, calories, duration) => {
-    await addCheckin(exerciseName, exerciseCount, calories, duration)
-    if (user) {
-      getWeekStats(user.id).then(setWeekStats)
-      setFeedItems(getFeed().map(item => ({
-        ...item,
-        userInfo: USERS.find(u => u.id === item.userId)
-      })))
-    }
+  const resetForm = () => {
+    setStep(1)
+    setExerciseType('')
+    setDuration('')
+    setCalories('')
   }
 
   if (loading) {
@@ -65,6 +85,9 @@ function DashboardPage() {
     )
   }
 
+  const typeLabel = exerciseType === 'cardio' ? '有氧心率训练' : '无氧力量训练'
+  const typeIcon = exerciseType === 'cardio' ? '❤️' : '💪'
+
   return (
     <div className='dashboard-page'>
       <div className='container'>
@@ -72,15 +95,15 @@ function DashboardPage() {
           <div className='welcome-avatar'>{user?.avatar}</div>
           <div>
             <h2 className='welcome-title'>你好，{user?.displayName} 💪</h2>
-            <p className='welcome-subtitle'>今天也要坚持锻炼哦！</p>
+            <p className='welcome-subtitle'>今天也要加油锻练哦！</p>
           </div>
         </div>
 
         <div className='dashboard-today'>
           <div className='today-card'>
-            <div className='today-icon'>🏋️</div>
-            <div className='today-value'>{todayCheckin?.exerciseCount || 0}</div>
-            <div className='today-label'>今日打卡组数</div>
+            <div className='today-icon'>{todayCheckin?.exerciseType === 'cardio' ? '❤️' : '💪'}</div>
+            <div className='today-value'>{todayCheckin?.exerciseType === 'cardio' ? '有氧' : todayCheckin?.exerciseType === 'strength' ? '无氧' : '-'}</div>
+            <div className='today-label'>今日训练类型</div>
           </div>
           <div className='today-card'>
             <div className='today-icon'>🔥</div>
@@ -95,36 +118,96 @@ function DashboardPage() {
         </div>
 
         <div className='checkin-form-card'>
-          <h3 className='cf-title'>⚡ 快速打卡</h3>
-          <form onSubmit={handleAddCheckin} className='checkin-form'>
-            <div className='cf-row'>
-              <input type='text' placeholder='练了什么动作？例如：深蹲、卧推...' value={checkinForm.exerciseName} onChange={e => setCheckinForm(p => ({ ...p, exerciseName: e.target.value }))} className='cf-input cf-input-name' />
-              <input type='number' min='1' max='50' placeholder='组数' value={checkinForm.exerciseCount} onChange={e => setCheckinForm(p => ({ ...p, exerciseCount: e.target.value }))} className='cf-input cf-input-sm' />
-              <input type='number' min='0' max='5000' placeholder='kcal' value={checkinForm.calories} onChange={e => setCheckinForm(p => ({ ...p, calories: e.target.value }))} className='cf-input cf-input-sm' />
-              <input type='number' min='0' max='600' placeholder='分钟' value={checkinForm.duration} onChange={e => setCheckinForm(p => ({ ...p, duration: e.target.value }))} className='cf-input cf-input-sm' />
-              <button type='submit' className='btn-cf-submit'>打卡</button>
+          <h3 className='cf-title'>⚡ 打卡</h3>
+
+          {step === 1 && (
+            <div className='cf-step'>
+              <div className='cf-step-label'>步骤 1/3 — 选择训练类型</div>
+              <div className='type-selector'>
+                <button
+                  className={'type-btn' + (exerciseType === 'cardio' ? ' selected' : '')}
+                  onClick={() => selectType('cardio')}
+                >
+                  <span className='type-icon'>❤️</span>
+                  <span className='type-name'>有氧心率训练</span>
+                  <span className='type-desc'>跑步、骑行、游泳、跳绳...</span>
+                </button>
+                <button
+                  className={'type-btn' + (exerciseType === 'strength' ? ' selected' : '')}
+                  onClick={() => selectType('strength')}
+                >
+                  <span className='type-icon'>💪</span>
+                  <span className='type-name'>无氧力量训练</span>
+                  <span className='type-desc'>深蹰、卧推、硬拉、向上引...</span>
+                </button>
+              </div>
             </div>
-          </form>
-          <div className='cf-quick'>
-            <span className='cf-quick-label'>快速打卡：</span>
-            <button onClick={() => quickCheckin('深蹲', 3, 45, 8)} className='btn-quick'>🏋️ 深蹲</button>
-            <button onClick={() => quickCheckin('俯卧撑', 3, 30, 5)} className='btn-quick'>💪 俯卧撑</button>
-            <button onClick={() => quickCheckin('平板支撑', 1, 20, 3)} className='btn-quick'>⏱️ 平板支撑</button>
-            <button onClick={() => quickCheckin('跑步', 1, 200, 25)} className='btn-quick'>🏃 跑步</button>
-          </div>
+          )}
+
+          {step === 2 && (
+            <div className='cf-step'>
+              <div className='cf-step-label'>步骤 2/3 — 运动时长</div>
+              <div className='cf-step-badge'>
+                <span className='cf-badge-icon'>{typeIcon}</span>
+                <span>{typeLabel}</span>
+              </div>
+              <form onSubmit={submitDuration} className='cf-number-form'>
+                <div className='cf-number-input-wrap'>
+                  <input
+                    type='number'
+                    min='1'
+                    max='600'
+                    placeholder='输入分钟数'
+                    value={duration}
+                    onChange={e => setDuration(e.target.value)}
+                    className='cf-number-input'
+                    autoFocus
+                  />
+                  <span className='cf-number-unit'>\u5206\u949f</span>
+                </div>
+                <div className='cf-step-actions'>
+                  <button type='button' onClick={resetForm} className='cf-btn-back'>返回</button>
+                  <button type='submit' className='cf-btn-next' disabled={!duration || Number(duration) <= 0}>下一步</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className='cf-step'>
+              <div className='cf-step-label'>步骤 3/3 — 消耗热量</div>
+              <div className='cf-step-badge'>
+                <span className='cf-badge-icon'>{typeIcon}</span>
+                <span>{typeLabel} \u00b7 {duration} \u5206\u949f</span>
+              </div>
+              <form onSubmit={submitCalories} className='cf-number-form'>
+                <div className='cf-number-input-wrap'>
+                  <input
+                    type='number'
+                    min='0'
+                    max='5000'
+                    placeholder='输入千卡'
+                    value={calories}
+                    onChange={e => setCalories(e.target.value)}
+                    className='cf-number-input'
+                    autoFocus
+                  />
+                  <span className='cf-number-unit'>\u5343\u5361 (kcal)</span>
+                </div>
+                <div className='cf-step-actions'>
+                  <button type='button' onClick={() => setStep(2)} className='cf-btn-back'>上一步</button>
+                  <button type='submit' className='cf-btn-submit' disabled={submitting}>
+                    {submitting ? '提交中...' : '✔ 打卡'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
 
         <div className='dashboard-week-summary'>
           <h3 className='ws-title'>本周统计</h3>
           <div className='ws-bars'>
-            <div className='ws-bar-item'>
-              <div className='ws-bar-label'>组数</div>
-              <div className='ws-bar-track'>
-                <div className='ws-bar-fill' style={{ width: Math.min(100, (weekStats.exercises / 100) * 100) + '%' }}>
-                  <span>{weekStats.exercises}</span>
-                </div>
-              </div>
-            </div>
             <div className='ws-bar-item'>
               <div className='ws-bar-label'>热量</div>
               <div className='ws-bar-track'>
@@ -155,16 +238,17 @@ function DashboardPage() {
               <div className='history-table'>
                 <div className='table-header'>
                   <span>日期</span>
-                  <span>打卡组数</span>
+                  <span>训练类型</span>
                   <span>热量 (kcal)</span>
                   <span>时长 (min)</span>
                 </div>
                 {userCheckins.map((checkin, i) => {
                   const isToday = checkin.date === new Date().toISOString().split('T')[0]
+                  const ct = checkin.exerciseType === 'cardio' ? '❤️ 有氧' : '💪 无氧'
                   return (
                     <div key={i} className={'table-row' + (isToday ? ' today' : '')}>
                       <span className='cell-date'>{checkin.date}{isToday ? ' (今天)' : ''}</span>
-                      <span className='cell-count'>{checkin.exerciseCount}</span>
+                      <span className='cell-type'>{ct}</span>
                       <span className='cell-calories'>{checkin.calories}</span>
                       <span className='cell-duration'>{checkin.duration}</span>
                     </div>
@@ -181,7 +265,7 @@ function DashboardPage() {
           </div>
         ) : (
           <div className='friend-feed'>
-            {feedItems.length > 0 ? feedItems.map(item => {
+            {feedItems.length > 0 ? feedItems.slice(0, 30).map(item => {
               const friend = item.userInfo
               return (
                 <div key={item.id} className='feed-item'>
@@ -191,21 +275,17 @@ function DashboardPage() {
                       <span className='feed-name'>{friend?.displayName}</span>
                       <span className='feed-time'>{timeAgo(item.timestamp)}</span>
                     </div>
-                    {item.type === 'checkin' ? (
-                      <p className='feed-text'>
-                        完成了 <strong>{item.exerciseName}</strong>
-                        {' · '}🔥 {item.calories} kcal · ⏱️ {item.duration} min
-                      </p>
-                    ) : item.type === 'milestone' ? (
-                      <p className='feed-milestone'>{item.text}</p>
-                    ) : null}
+                    <p className='feed-text'>
+                      完成了 <strong>{item.exerciseName}</strong>
+                      {' \u00b7 '}🔥 {item.calories} kcal \u00b7 ⏱️ {item.duration} min
+                    </p>
                   </div>
                 </div>
               )
             }) : (
               <div className='exercises-empty'>
                 <div className='empty-icon'>👥</div>
-                <h3>暂无好友动态</h3>
+                <h3>\u6682\u65e0好友动态</h3>
                 <p>邀请好友一起开始健身吧</p>
               </div>
             )}

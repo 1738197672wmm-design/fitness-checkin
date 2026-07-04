@@ -1,26 +1,26 @@
-﻿// POST /api/setup - 初始化用户数据（首次登录时调用）
+// POST /api/setup - ????????????????
 const MOCK_CHECKINS = [
-  { userId: 'u1', daysAgo: 0, exerciseCount: 10, calories: 300, duration: 45 },
-  { userId: 'u1', daysAgo: 1, exerciseCount: 8, calories: 240, duration: 35 },
-  { userId: 'u1', daysAgo: 3, exerciseCount: 12, calories: 360, duration: 50 },
-  { userId: 'u2', daysAgo: 0, exerciseCount: 12, calories: 380, duration: 55 },
-  { userId: 'u2', daysAgo: 2, exerciseCount: 9, calories: 280, duration: 42 },
-  { userId: 'u2', daysAgo: 4, exerciseCount: 15, calories: 450, duration: 65 },
-  { userId: 'u3', daysAgo: 0, exerciseCount: 8, calories: 250, duration: 40 },
-  { userId: 'u3', daysAgo: 1, exerciseCount: 14, calories: 420, duration: 60 },
-  { userId: 'u3', daysAgo: 5, exerciseCount: 10, calories: 320, duration: 48 },
-  { userId: 'u4', daysAgo: 0, exerciseCount: 15, calories: 460, duration: 68 },
-  { userId: 'u4', daysAgo: 2, exerciseCount: 11, calories: 340, duration: 50 },
-  { userId: 'u4', daysAgo: 6, exerciseCount: 13, calories: 400, duration: 58 },
-  { userId: 'u5', daysAgo: 0, exerciseCount: 6, calories: 180, duration: 30 },
-  { userId: 'u5', daysAgo: 1, exerciseCount: 9, calories: 270, duration: 42 },
-  { userId: 'u5', daysAgo: 3, exerciseCount: 7, calories: 220, duration: 35 },
-  { userId: 'u6', daysAgo: 0, exerciseCount: 11, calories: 350, duration: 52 },
-  { userId: 'u6', daysAgo: 2, exerciseCount: 8, calories: 260, duration: 40 },
-  { userId: 'u6', daysAgo: 4, exerciseCount: 10, calories: 310, duration: 46 },
-  { userId: 'u7', daysAgo: 0, exerciseCount: 20, calories: 600, duration: 90 },
-  { userId: 'u7', daysAgo: 1, exerciseCount: 16, calories: 500, duration: 75 },
-  { userId: 'u7', daysAgo: 3, exerciseCount: 18, calories: 550, duration: 80 },
+  { userId: 'u1', daysAgo: 0, exerciseType: 'cardio', calories: 300, duration: 45 },
+  { userId: 'u1', daysAgo: 1, exerciseType: 'strength', calories: 240, duration: 35 },
+  { userId: 'u1', daysAgo: 3, exerciseType: 'cardio', calories: 360, duration: 50 },
+  { userId: 'u2', daysAgo: 0, exerciseType: 'strength', calories: 380, duration: 55 },
+  { userId: 'u2', daysAgo: 2, exerciseType: 'cardio', calories: 280, duration: 42 },
+  { userId: 'u2', daysAgo: 4, exerciseType: 'strength', calories: 450, duration: 65 },
+  { userId: 'u3', daysAgo: 0, exerciseType: 'cardio', calories: 250, duration: 40 },
+  { userId: 'u3', daysAgo: 1, exerciseType: 'strength', calories: 420, duration: 60 },
+  { userId: 'u3', daysAgo: 5, exerciseType: 'cardio', calories: 320, duration: 48 },
+  { userId: 'u4', daysAgo: 0, exerciseType: 'strength', calories: 460, duration: 68 },
+  { userId: 'u4', daysAgo: 2, exerciseType: 'cardio', calories: 340, duration: 50 },
+  { userId: 'u4', daysAgo: 6, exerciseType: 'strength', calories: 400, duration: 58 },
+  { userId: 'u5', daysAgo: 0, exerciseType: 'cardio', calories: 180, duration: 30 },
+  { userId: 'u5', daysAgo: 1, exerciseType: 'strength', calories: 270, duration: 42 },
+  { userId: 'u5', daysAgo: 3, exerciseType: 'cardio', calories: 220, duration: 35 },
+  { userId: 'u6', daysAgo: 0, exerciseType: 'strength', calories: 350, duration: 52 },
+  { userId: 'u6', daysAgo: 2, exerciseType: 'cardio', calories: 260, duration: 40 },
+  { userId: 'u6', daysAgo: 4, exerciseType: 'strength', calories: 310, duration: 46 },
+  { userId: 'u7', daysAgo: 0, exerciseType: 'strength', calories: 600, duration: 90 },
+  { userId: 'u7', daysAgo: 1, exerciseType: 'cardio', calories: 500, duration: 75 },
+  { userId: 'u7', daysAgo: 3, exerciseType: 'strength', calories: 550, duration: 80 },
 ]
 
 export async function onRequest(context) {
@@ -58,17 +58,17 @@ export async function onRequest(context) {
       const dateStr = d.toISOString().split('T')[0]
 
       await env.DB.prepare(
-        'INSERT OR IGNORE INTO checkins (userId, date, exerciseCount, calories, duration) VALUES (?, ?, ?, ?, ?)'
-      ).bind(userId, dateStr, c.exerciseCount, c.calories, c.duration).run()
+        'INSERT OR IGNORE INTO checkins (userId, date, exerciseType, calories, duration) VALUES (?, ?, ?, ?, ?)'
+      ).bind(userId, dateStr, c.exerciseType, c.calories, c.duration).run()
     }
 
     // Insert mock feed
     const feedItems = [
-      { userId: 'u4', type: 'checkin', exerciseName: 'Barbell Bench Press', calories: 120, duration: 12 },
-      { userId: 'u2', type: 'checkin', exerciseName: 'Deadlift', calories: 150, duration: 15 },
-      { userId: 'u7', type: 'checkin', exerciseName: 'Squat', calories: 200, duration: 20 },
-      { userId: 'u3', type: 'checkin', exerciseName: 'Dumbbell Curl', calories: 80, duration: 8 },
-      { userId: 'u1', type: 'checkin', exerciseName: 'Pull-Up', calories: 100, duration: 10 },
+      { userId: 'u4', type: 'checkin', exerciseName: '无氧力量训练', calories: 120, duration: 12 },
+      { userId: 'u2', type: 'checkin', exerciseName: '无氧力量训练', calories: 150, duration: 15 },
+      { userId: 'u7', type: 'checkin', exerciseName: '无氧力量训练', calories: 200, duration: 20 },
+      { userId: 'u3', type: 'checkin', exerciseName: '无氧力量训练', calories: 80, duration: 8 },
+      { userId: 'u1', type: 'checkin', exerciseName: '有氧心率训练', calories: 100, duration: 10 },
     ]
 
     for (const f of feedItems) {

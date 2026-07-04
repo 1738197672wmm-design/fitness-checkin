@@ -12,7 +12,7 @@ export async function onRequest(context) {
 
   try {
     const { results } = await env.DB.prepare(
-      'SELECT date, exerciseCount, calories, duration FROM checkins WHERE userId = ? ORDER BY date DESC'
+      'SELECT date, exerciseType, calories, duration FROM checkins WHERE userId = ? ORDER BY date DESC'
     ).bind(userId).all()
 
     // Get today's checkin

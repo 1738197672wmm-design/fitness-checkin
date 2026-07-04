@@ -23,7 +23,7 @@ export async function onRequest(context) {
     }
 
     const row = await env.DB.prepare(
-      'SELECT COALESCE(SUM(exerciseCount),0) as exercises, COALESCE(SUM(calories),0) as calories, COALESCE(SUM(duration),0) as duration FROM checkins WHERE userId = ? AND date >= ?'
+      'SELECT COALESCE(SUM(calories),0) as calories, COALESCE(SUM(duration),0) as duration FROM checkins WHERE userId = ? AND date >= ?'
     ).bind(userId, since).first()
 
     return new Response(JSON.stringify(row), {
