@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react'
 import { initAllAnimations } from '../utils/animations'
 import { useSearchParams } from 'react-router-dom'
 import exercisesData from '../data/exercises.json'
+import localImages from '../data/local-images.json'
 import './ExercisesPage.css'
 
 const BODY_PARTS = ['??', ...new Set(exercisesData.map(e => e.body_part))]
@@ -51,8 +52,14 @@ function ExercisesPage() {
 
   const visible = filtered.slice(0, visibleCount)
 
-  function getCdnUrl(name) {
-    return CDN_BASE + '/' + nameToFilename(name) + '/0.jpg'
+  function getCdnUrl(ex) {
+    if (localImages.includes(ex.id)) {
+      return '/exercises/img/' + ex.id + '.jpg'
+    }
+    if (ex.media_id) {
+      return CDN_BASE + '/' + nameToFilename(ex.name) + '/0.jpg'
+    }
+    return null
   }
 
   useEffect(() => {
@@ -97,7 +104,7 @@ function ExercisesPage() {
                 {!imgFailed ? (
                   <img
                     className="exercise-card-img"
-                    src={getCdnUrl(ex.name)}
+                    src={getCdnUrl(ex)}
                     alt={ex.name}
                     loading="lazy"
                     onError={() => handleImageError(ex.id, true)}
@@ -142,7 +149,7 @@ function ExercisesPage() {
                 {!failedImages.has(selectedExercise.id + '-modal') ? (
                   <img
                     className="modal-gif-img"
-                    src={getCdnUrl(selectedExercise.name)}
+                    src={getCdnUrl(selectedExercise)}
                     alt={selectedExercise.name}
                     onError={() => setFailedImages(prev => new Set(prev).add(selectedExercise.id + '-modal'))}
                   />
