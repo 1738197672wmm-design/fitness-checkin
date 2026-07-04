@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { initAllAnimations } from '../utils/animations'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
@@ -20,9 +20,6 @@ const BODY_PARTS = [
 BODY_PARTS.forEach(bp => {
   bp.count = exercisesData.filter(e => e.body_part === bp.key).length
 })
-const FEATURED_EXERCISES = exercisesData
-  .filter(e => e.media_id && (e.body_part === 'chest' || e.body_part === 'back' || e.body_part === 'upper legs'))
-  .slice(0, 6)
 
 function HeroPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
@@ -135,59 +132,11 @@ function HeroPage() {
         </div>
       </section>
 
-      <section className='featured-section' id='featured'>
+      <section className='slogan-section'>
         <div className='container'>
-          <div className='featured-header'>
-            <span className='section-label'>精选推荐</span>
-            <h2 className='section-title'>精选推荐项目</h2>
-            <p className='section-desc'>为你精心挑选的高效训练动作，助你快速达成目标</p>
-          </div>
-
-          <div className='featured-grid'>
-            {FEATURED_EXERCISES.map((ex, i) => (
-              <Link
-                key={ex.id}
-                to='/exercises'
-                className='featured-card animate-in'
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <div className='featured-image'>
-                  <div className='exercise-card-placeholder'>
-                    <span className='placeholder-icon'>{getBodyPartIcon(ex.body_part)}</span>
-                  </div>
-                  <div className='featured-overlay' />
-                  <div className='featured-category'>{ex.body_part}</div>
-                </div>
-                <div className='featured-info'>
-                  <h3 className='featured-name'>{ex.name}</h3>
-                  <div className='featured-tags'>
-                    <span className='ftag'>{ex.target}</span>
-                    <span className='ftag'>{ex.equipment}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className='featured-cta'>
-            <Link to='/exercises' className='btn-featured-all'>
-              查看全部 {exercisesData.length.toLocaleString()} 个动作 →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className='contact-section' id='contact'>
-        <div className='container'>
-          <div className='contact-card'>
-            <div className='contact-glow' />
-            <div className='contact-icon'>📟</div>
-            <h2 className='contact-title'>加入我们的健身社群</h2>
-            <p className='contact-desc'>和朋友们一起打卡，彼此鼓励，让坚持变得更容易。</p>
-            <div className='contact-actions'>
-              <Link to={user ? '/dashboard' : '/login'} className='btn-contact primary'>{user ? '去打卡' : '立即加入'}</Link>
-              <Link to='/leaderboard' className='btn-contact secondary'>查看排行</Link>
-            </div>
+          <div className='slogan-card'>
+            <div className='slogan-glow' />
+            <p className='slogan-text'>健身是唯一一件，付出了就有回报的事情，今天你练了吗？</p>
           </div>
         </div>
       </section>

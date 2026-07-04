@@ -93,24 +93,6 @@
   font-size: 13px;
   text-align: center;
 }
-.login-hint {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-subtle);
-  text-align: center;
-}
-.login-hint p { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
-.quick-fill { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-.quick-fill button {
-  font-size: 11px;
-  padding: 5px 10px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-.quick-fill button:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 
 /* ============================================
    RESPONSIVE
@@ -130,7 +112,4 @@
   .form-group label { font-size: 11px; }
   .form-group input { padding: 12px 14px; font-size: 15px; }
   .btn-submit { padding: 14px; font-size: 15px; }
-  .login-hint { margin-top: 24px; padding-top: 20px; }
-  .quick-fill { gap: 6px; }
-  .quick-fill button { font-size: 11px; padding: 6px 10px; }
 }
