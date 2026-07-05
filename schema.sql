@@ -1,13 +1,11 @@
-﻿CREATE TABLE IF NOT EXISTS checkins (
+CREATE TABLE IF NOT EXISTS checkins (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   userId TEXT NOT NULL,
   date TEXT NOT NULL,
   exerciseType TEXT DEFAULT 'strength',
   calories INTEGER DEFAULT 0,
   duration INTEGER DEFAULT 0,
-  createdAt TEXT DEFAULT (datetime('now')),
-  UNIQUE(userId, date)
-);
+  createdAt TEXT DEFAULT (datetime('now'));
 
 CREATE TABLE IF NOT EXISTS feed (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

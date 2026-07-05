@@ -1,4 +1,4 @@
-ï»¿// GET /api/stats?userId=xxx&range=week|month - èŽ·å–ç»Ÿè®¡æ•°æ®
+// GET /api/stats?userId=xxx&range=week|month - »ñÈ¡Í³¼ÆÊý¾Ý
 export async function onRequest(context) {
   const { request, env } = context
   const url = new URL(request.url)
@@ -23,7 +23,7 @@ export async function onRequest(context) {
     }
 
     const row = await env.DB.prepare(
-      'SELECT COALESCE(SUM(calories),0) as calories, COALESCE(SUM(duration),0) as duration FROM checkins WHERE userId = ? AND date >= ?'
+      'SELECT COUNT(*) as exercises, COALESCE(SUM(calories),0) as calories, COALESCE(SUM(duration),0) as duration FROM checkins WHERE userId = ? AND date >= ?'
     ).bind(userId, since).first()
 
     return new Response(JSON.stringify(row), {

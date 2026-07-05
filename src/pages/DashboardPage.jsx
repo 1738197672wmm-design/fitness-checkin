@@ -8,12 +8,13 @@ import './DashboardPage.css'
 function DashboardPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
   const { user } = useAuth()
-  const { loading, todayCheckin, userCheckins, addCheckin, getWeekStats, getFeed } = useCheckin()
+  const { loading, todayCheckin, todayCount, userCheckins, addCheckin, getWeekStats, getFeed } = useCheckin()
   // Step form state
   const [step, setStep] = useState(1)
   const [exerciseType, setExerciseType] = useState('')
   const [duration, setDuration] = useState('')
   const [calories, setCalories] = useState('')
+  const [checkinError, setCheckinError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   // Data state
   const [activeTab, setActiveTab] = useState('checkin')
@@ -58,7 +59,7 @@ function DashboardPage() {
       })))
     }
   }
-  const resetForm = () => {
+  const resetForm = () => { setCheckinError('');
     setStep(1)
     setExerciseType('')
     setDuration('')

@@ -8,6 +8,7 @@ export function useCheckin() {
   const [checkins, setCheckins] = useState([])
   const [feed, setFeed] = useState([])
   const [loading, setLoading] = useState(true)
+  const [todayCount, setTodayCount] = useState(0)
 
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], [])
 
@@ -18,6 +19,7 @@ export function useCheckin() {
       const res = await fetch(API_BASE + '/checkins?userId=' + user.id)
       const data = await res.json()
       setCheckins(data.checkins || [])
+      setTodayCount(data.todayCount || 0)
     } catch (err) {
       console.error('Failed to fetch checkins:', err)
     }
@@ -43,22 +45,35 @@ export function useCheckin() {
   }, [user, fetchCheckins, fetchFeed])
 
   const addCheckin = useCallback(async (exerciseType, calories, duration) => {
-    if (!user) return
+    if (!user) return false
     try {
-      await fetch(API_BASE + '/checkin', {
+      const res = await fetch(API_BASE + '/checkin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, exerciseType, calories, duration })
       })
+      const data = await res.json()
+      if (!data.success) {
+        return data.error || '´ò¿¨Ê§°Ü'
+      }
       await Promise.all([fetchCheckins(), fetchFeed()])
+      return true
     } catch (err) {
       console.error('Failed to add checkin:', err)
+      return 'ÍøÂç´íÎó£¬ÇëÖØÊÔ'
     }
   }, [user, fetchCheckins, fetchFeed])
 
-  const todayCheckin = useMemo(() =>
-    checkins.find(c => c.date === todayStr) || null
-  , [checkins, todayStr])
+  // Aggregate today's checkins (sum calories/duration, pick latest exerciseType)
+  const todayCheckin = useMemo(() => {
+    const todayRows = checkins.filter(c => c.date === todayStr)
+    if (todayRows.length === 0) return null
+    return {
+      calories: todayRows.reduce((s, r) => s + r.calories, 0),
+      duration: todayRows.reduce((s, r) => s + r.duration, 0),
+      exerciseType: todayRows[todayRows.length - 1].exerciseType,
+    }
+  }, [checkins, todayStr])
 
   const userCheckins = useMemo(() =>
     [...checkins].sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -69,7 +84,7 @@ export function useCheckin() {
       const res = await fetch(API_BASE + '/stats?userId=' + userId + '&range=month')
       return await res.json()
     } catch {
-      return { calories: 0, duration: 0 }
+      return { exercises: 0, calories: 0, duration: 0 }
     }
   }, [])
 
@@ -78,7 +93,7 @@ export function useCheckin() {
       const res = await fetch(API_BASE + '/stats?userId=' + userId + '&range=week')
       return await res.json()
     } catch {
-      return { calories: 0, duration: 0 }
+      return { exercises: 0, calories: 0, duration: 0 }
     }
   }, [])
 
@@ -98,6 +113,7 @@ export function useCheckin() {
     loading,
     checkins,
     todayCheckin,
+    todayCount,
     userCheckins,
     addCheckin,
     getMonthStats,

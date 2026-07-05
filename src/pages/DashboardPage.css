@@ -521,4 +521,45 @@
   .feed-avatar { width: 36px; height: 36px; font-size: 18px; }
   .feed-text { font-size: 13px; }
   .feed-milestone { font-size: 13px; padding: 6px 12px; }
+
+/* Today checkin limit bar */
+.dashboard-today-limit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+.today-limit-text {
+  color: var(--text-muted);
+  font-size: 14px;
+  white-space: nowrap;
+  min-width: 120px;
+}
+.today-limit-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.today-limit-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #c084fc, #f472b6);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Checkin form error */
+.cf-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
 }

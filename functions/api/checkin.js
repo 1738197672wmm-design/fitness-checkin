@@ -1,4 +1,4 @@
-// POST /api/checkin - ??/??????
+// POST /api/checkin - 提交打卡（每天最多3次）
 export async function onRequest(context) {
   const { request, env } = context
   if (request.method !== 'POST') {
@@ -16,26 +16,25 @@ export async function onRequest(context) {
     const today = new Date().toISOString().split('T')[0]
     const eType = exerciseType === 'cardio' ? 'cardio' : 'strength'
 
-    // Check if already checked in today
-    const existing = await env.DB.prepare(
-      'SELECT id FROM checkins WHERE userId = ? AND date = ?'
+    // Count today's checkins
+    const row = await env.DB.prepare(
+      'SELECT COUNT(*) as count FROM checkins WHERE userId = ? AND date = ?'
     ).bind(userId, today).first()
 
-    if (existing) {
-      // Update existing - accumulate calories and duration
-      await env.DB.prepare(
-        'UPDATE checkins SET calories = calories + ?, duration = duration + ? WHERE id = ?'
-      ).bind(calories || 0, duration || 0, existing.id).run()
-    } else {
-      // Insert new
-      await env.DB.prepare(
-        'INSERT INTO checkins (userId, date, exerciseType, calories, duration) VALUES (?, ?, ?, ?, ?)'
-      ).bind(userId, today, eType, calories || 0, duration || 0).run()
+    if (row.count >= 3) {
+      return new Response(JSON.stringify({ success: false, error: '今天已打卡3次，已达上限' }), {
+        status: 400, headers: { 'Content-Type': 'application/json' }
+      })
     }
+
+    // Insert new checkin (each submission = one row)
+    await env.DB.prepare(
+      'INSERT INTO checkins (userId, date, exerciseType, calories, duration) VALUES (?, ?, ?, ?, ?)'
+    ).bind(userId, today, eType, calories || 0, duration || 0).run()
 
     // Add to feed
     const now = new Date().toISOString()
-    const typeLabel = eType === 'cardio' ? '鏈夋哀蹇冪巼璁粌' : '鏃犳哀鍔涢噺璁粌'
+    const typeLabel = eType === 'cardio' ? '有氧训练' : '力量训练'
     await env.DB.prepare(
       'INSERT INTO feed (userId, type, exerciseName, calories, duration, timestamp) VALUES (?, ?, ?, ?, ?, ?)'
     ).bind(userId, 'checkin', typeLabel, calories || 0, duration || 0, now).run()
