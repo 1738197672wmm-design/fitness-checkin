@@ -88,21 +88,21 @@ function DashboardPage() {
           </div>
         </div>
         <div className='dashboard-today'>
-          <BorderGlow borderRadius={14} glowRadius={25} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
+          <BorderGlow borderRadius={14} glowRadius={5} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
             <div className='today-card'>
               <div className='today-icon'>{todayCheckin?.exerciseType === 'cardio' ? '❤️' : '💪'}</div>
               <div className='today-value'>{todayCheckin?.exerciseType === 'cardio' ? '有氧' : todayCheckin?.exerciseType === 'strength' ? '力量' : '-'}</div>
               <div className='today-label'>今日训练</div>
             </div>
           </BorderGlow>
-          <BorderGlow borderRadius={14} glowRadius={25} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
+          <BorderGlow borderRadius={14} glowRadius={5} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
             <div className='today-card'>
               <div className='today-icon'>🔥</div>
               <div className='today-value'>{todayCheckin?.calories || 0}</div>
               <div className='today-label'>消耗热量 (kcal)</div>
             </div>
           </BorderGlow>
-          <BorderGlow borderRadius={14} glowRadius={25} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
+          <BorderGlow borderRadius={14} glowRadius={5} edgeSensitivity={20} glowIntensity={0.6} colors={['#38bdf8', '#c084fc', '#f472b6']} backgroundColor="transparent">
             <div className='today-card'>
               <div className='today-icon'>⏱️</div>
               <div className='today-value'>{todayCheckin?.duration || 0}m</div>
@@ -110,7 +110,7 @@ function DashboardPage() {
             </div>
           </BorderGlow>
         </div>
-        <BorderGlow borderRadius={16} glowRadius={35} edgeSensitivity={25} glowIntensity={0.7} colors={['#c084fc', '#f472b6', '#38bdf8']} backgroundColor="transparent">
+        <BorderGlow borderRadius={16} glowRadius={5} edgeSensitivity={25} glowIntensity={0.7} colors={['#c084fc', '#f472b6', '#38bdf8']} backgroundColor="transparent">
           <div className='checkin-form-card'>
             <h3 className='cf-title'>📋 打卡</h3>
             {step === 1 && (

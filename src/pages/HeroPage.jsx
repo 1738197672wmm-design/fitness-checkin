@@ -90,7 +90,7 @@ function HeroPage() {
               <BorderGlow
                 key={bp.key}
                 borderRadius={16}
-                glowRadius={30}
+                glowRadius={5}
                 edgeSensitivity={25}
                 glowIntensity={0.8}
                 colors={['#c084fc', '#f472b6', '#38bdf8']}
