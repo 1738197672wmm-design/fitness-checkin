@@ -1,8 +1,10 @@
-// GET /api/rankings?metric=calories - »ñÈ¡ÅÅÐÐ°ñ
+// GET /api/rankings?metric=calories - ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ð°ï¿½
 export async function onRequest(context) {
   const { request, env } = context
   const url = new URL(request.url)
-  const metric = url.searchParams.get('metric') || 'calories'
+  var allowedMetrics = ['exercises', 'calories', 'duration']
+  var rawMetric = url.searchParams.get('metric') || 'calories'
+  const metric = allowedMetrics.includes(rawMetric) ? rawMetric : 'calories'
 
   try {
     const now = new Date()
