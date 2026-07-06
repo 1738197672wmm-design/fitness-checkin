@@ -1,4 +1,4 @@
-// GET /api/checkins?userId=xxx - »ñÈ¡ÓÃ»§µÄ´ò¿¨¼ÇÂ¼
+// GET /api/checkins?userId=xxx - ï¿½ï¿½È¡ï¿½Ã»ï¿½ï¿½Ä´ò¿¨¼ï¿½Â¼
 export async function onRequest(context) {
   const { request, env } = context
   const url = new URL(request.url)
@@ -16,7 +16,7 @@ export async function onRequest(context) {
     ).bind(userId).all()
 
     // Get today's stats (summed)
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date(Date.now() + 28800000).toISOString().split('T')[0]
     const todayRows = results.filter(r => r.date === today)
     const todayCheckin = todayRows.length > 0 ? {
       calories: todayRows.reduce((s, r) => s + r.calories, 0),

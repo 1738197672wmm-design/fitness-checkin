@@ -10,7 +10,7 @@ export function useCheckin() {
   const [loading, setLoading] = useState(true)
   const [todayCount, setTodayCount] = useState(0)
 
-  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], [])
+  const todayStr = useMemo(() => new Date(Date.now() + 28800000).toISOString().split('T')[0], [])
 
   // Fetch user checkins
   const fetchCheckins = useCallback(async () => {
@@ -54,13 +54,13 @@ export function useCheckin() {
       })
       const data = await res.json()
       if (!data.success) {
-        return data.error || '´ò¿¨Ê§°Ü'
+        return data.error || 'ï¿½ï¿½Ê§ï¿½ï¿½'
       }
       await Promise.all([fetchCheckins(), fetchFeed()])
       return true
     } catch (err) {
       console.error('Failed to add checkin:', err)
-      return 'ÍøÂç´íÎó£¬ÇëÖØÊÔ'
+      return 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
     }
   }, [user, fetchCheckins, fetchFeed])
 

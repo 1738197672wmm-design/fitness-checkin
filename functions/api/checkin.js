@@ -1,4 +1,4 @@
-// POST /api/checkin - Ìá½»´ò¿¨£¨Ã¿Ìì×î¶à3´Î£©
+// POST /api/checkin - ï¿½á½»ï¿½ò¿¨£ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½3ï¿½Î£ï¿½
 export async function onRequest(context) {
   const { request, env } = context
   if (request.method !== 'POST') {
@@ -13,7 +13,7 @@ export async function onRequest(context) {
       })
     }
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date(Date.now() + 28800000).toISOString().split('T')[0]
     const eType = exerciseType === 'cardio' ? 'cardio' : 'strength'
 
     // Count today's checkins
@@ -22,7 +22,7 @@ export async function onRequest(context) {
     ).bind(userId, today).first()
 
     if (row.count >= 3) {
-      return new Response(JSON.stringify({ success: false, error: '½ñÌìÒÑ´ò¿¨3´Î£¬ÒÑ´ïÉÏÏÞ' }), {
+      return new Response(JSON.stringify({ success: false, error: 'ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½3ï¿½Î£ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½' }), {
         status: 400, headers: { 'Content-Type': 'application/json' }
       })
     }
@@ -33,8 +33,8 @@ export async function onRequest(context) {
     ).bind(userId, today, eType, calories || 0, duration || 0).run()
 
     // Add to feed
-    const now = new Date().toISOString()
-    const typeLabel = eType === 'cardio' ? 'ÓÐÑõÑµÁ·' : 'Á¦Á¿ÑµÁ·'
+    const now = new Date(Date.now() + 28800000).toISOString()
+    const typeLabel = eType === 'cardio' ? 'ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½' : 'ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½'
     await env.DB.prepare(
       'INSERT INTO feed (userId, type, exerciseName, calories, duration, timestamp) VALUES (?, ?, ?, ?, ?, ?)'
     ).bind(userId, 'checkin', typeLabel, calories || 0, duration || 0, now).run()

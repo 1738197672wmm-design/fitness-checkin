@@ -7,7 +7,7 @@ export async function onRequest(context) {
   const metric = allowedMetrics.includes(rawMetric) ? rawMetric : 'calories'
 
   try {
-    const now = new Date()
+    const now = new Date(Date.now() + 28800000)
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
 
     const { results } = await env.DB.prepare(

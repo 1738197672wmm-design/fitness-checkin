@@ -1,4 +1,4 @@
-// GET /api/stats?userId=xxx&range=week|month - 获取统计数据
+// GET /api/stats?userId=xxx&range=week|month - 锟斤拷取统锟斤拷锟斤拷锟斤拷
 export async function onRequest(context) {
   const { request, env } = context
   const url = new URL(request.url)
@@ -12,7 +12,7 @@ export async function onRequest(context) {
   }
 
   try {
-    const now = new Date()
+    const now = new Date(Date.now() + 28800000)
     let since
     if (range === 'month') {
       since = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
