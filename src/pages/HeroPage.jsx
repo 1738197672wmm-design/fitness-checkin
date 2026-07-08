@@ -20,7 +20,7 @@ const BODY_PARTS = [
 function HeroPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
   const { user } = useAuth()
-  const { todayCheckin, getWeekStats } = useCheckin()
+  
   return (
     <div className='hero-page'>
       <section className='hero-section'>
