@@ -34,7 +34,7 @@ export async function onRequest(context) {
 
     // Add to feed
     const now = new Date(Date.now() + 28800000).toISOString()
-    const typeLabel = eType === 'cardio' ? '����ѵ��' : '����ѵ��'
+    const typeLabel = eType === 'cardio' ? '\u6709\u6c27\u8bad\u7ec3' : '\u529b\u91cf\u8bad\u7ec3'
     await env.DB.prepare(
       'INSERT INTO feed (userId, type, exerciseName, calories, duration, timestamp) VALUES (?, ?, ?, ?, ?, ?)'
     ).bind(userId, 'checkin', typeLabel, calories || 0, duration || 0, now).run()
