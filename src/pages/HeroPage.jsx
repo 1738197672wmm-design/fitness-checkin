@@ -7,18 +7,16 @@ import { useCheckin } from '../hooks/useCheckin'
 import exercisesData from '../data/exercises.json'
 import './HeroPage.css'
 const BODY_PARTS = [
-  { key: 'chest', label: '胸部', icon: '💪', count: 0 },
-  { key: 'back', label: '背部', icon: '🏋️', count: 0 },
-  { key: 'shoulders', label: '肩部', icon: '🦾', count: 0 },
-  { key: 'upper arms', label: '手臂', icon: '💪', count: 0 },
-  { key: 'upper legs', label: '大腿', icon: '🦵', count: 0 },
-  { key: 'lower legs', label: '小腿', icon: '🦶', count: 0 },
-  { key: 'waist', label: '腰腹', icon: '🧘', count: 0 },
-  { key: 'cardio', label: '有氧', icon: '🏃', count: 0 },
+  { key: 'chest', label: '??', icon: '??', count: 163 },
+  { key: 'back', label: '??', icon: '???', count: 203 },
+  { key: 'shoulders', label: '??', icon: '??', count: 143 },
+  { key: 'upper arms', label: '??', icon: '??', count: 292 },
+  { key: 'upper legs', label: '??', icon: '??', count: 227 },
+  { key: 'lower legs', label: '??', icon: '??', count: 59 },
+  { key: 'waist', label: '??', icon: '??', count: 169 },
+  { key: 'cardio', label: '??', icon: '??', count: 29 },
 ];
-BODY_PARTS.forEach(bp => {
-  bp.count = exercisesData.filter(e => e.body_part === bp.key).length
-})
+
 function HeroPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
   const { user } = useAuth()
@@ -44,7 +42,7 @@ function HeroPage() {
               </h1>
               <div className='hero-stats-inline'>
                 <div className='stat-block'>
-                  <span className='stat-number'>{exercisesData.length.toLocaleString()}</span>
+                  <span className='stat-number'>{1324}</span>
                   <span className='stat-label'>专业动作</span>
                 </div>
                 <div className='stat-block'>

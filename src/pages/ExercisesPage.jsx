@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { initAllAnimations } from '../utils/animations'
 import { useSearchParams } from 'react-router-dom'
-import exercisesData from '../data/exercises.json'
-import localImages from '../data/local-images.json'
+// exercisesData loaded dynamically via fetch
+// localImages loaded dynamically
 import './ExercisesPage.css'
 
 const BODY_PARTS = ['全部', ...new Set(exercisesData.map(e => e.body_part))]
@@ -30,9 +30,14 @@ function nameToFilename(name) {
 function ExercisesPage() {
   useEffect(() => { const timer = setTimeout(initAllAnimations, 100); return () => clearTimeout(timer) }, [])
   const [searchParams] = useSearchParams()
+  const BODY_PARTS = ['?', ...new Set(exercisesData.map(e => e.body_part))]
+  const EQUIPMENT_TYPES = ['?', ...new Set(exercisesData.map(e => e.equipment))].sort()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState(() => searchParams.get('category') || '全部')
   const [equipment, setEquipment] = useState('全部')
+  const [exercisesData, setExercisesData] = useState([])
+  const [localImages, setLocalImages] = useState([])
+  const [loading, setLoading] = useState(true)
   const [selectedExercise, setSelectedExercise] = useState(null)
   const [failedImages, setFailedImages] = useState(new Set())
   const [visibleCount, setVisibleCount] = useState(48)
@@ -74,7 +79,7 @@ function ExercisesPage() {
         <div className="exercises-header">
           <span className="section-label">健身动作库</span>
           <h2 className="section-title">健身动作库</h2>
-          <p className="section-desc">探索 {exercisesData.length.toLocaleString()} 个专业健身动作，找到最适合你的训练方式</p>
+          <p className="section-desc">探索 {(exercisesData.length || 0).toLocaleString()} 个专业健身动作，找到最适合你的训练方式</p>
         </div>
 
         <div className="exercises-filters">
@@ -183,8 +188,8 @@ function ExercisesPage() {
 }
 
 function getBodyPartIcon(part) {
-  const icons = { waist: '🧘', chest: '💪', back: '🏋️', shoulders: '🦾', 'upper arms': '💪', 'lower arms': '🦾', 'upper legs': '🦵', 'lower legs': '🦶', neck: '🧘', cardio: '🏃' }
-  return icons[part] || '🏋️'
+  const icons = { waist: "??", chest: "??", back: "???", shoulders: "??", "upper arms": "??", "lower arms": "??", "upper legs": "??", "lower legs": "??", neck: "??", cardio: "??" }
+  return icons[part] || "???"
 }
 
 export default ExercisesPage
