@@ -48,7 +48,7 @@ function AppLayout() {
             {user ? (
               <>
                 <span className="user-badge">
-                  <span className="user-avatar">{user.avatar}</span>
+                  <img className="user-avatar" src={user.avatar} alt="" />
                   <span className="user-name">{user.displayName}</span>
                 </span>
                 <button onClick={handleLogout} className="btn-logout">退出</button>

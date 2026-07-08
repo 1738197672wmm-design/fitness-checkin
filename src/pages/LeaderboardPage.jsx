@@ -93,7 +93,7 @@ function LeaderboardPage() {
                 {rankings.slice(0, 3).map((user, i) => (
                   <div key={user.id} className={'podium-item rank-' + (i + 1)}>
                     <div className='podium-medal'>{medals[i]}</div>
-                    <div className='podium-avatar'>{user.avatar}</div>
+                    <img className='podium-avatar' src={user.avatar} alt='' />
                     <div className='podium-name'>{user.displayName}</div>
                     <div className='podium-value'>{getValue(user)}{metricUnits[metric]}</div>
                   </div>
@@ -107,7 +107,7 @@ function LeaderboardPage() {
                   <div className='list-rank'>
                     {i < 3 ? <span className='rank-medal'>{medals[i]}</span> : <span className='rank-num'>#{i + 1}</span>}
                   </div>
-                  <div className='list-avatar'>{user.avatar}</div>
+                  <img className='list-avatar' src={user.avatar} alt='' />
                   <div className='list-info'>
                     <div className='list-name'>{user.displayName}</div>
                     <div className='list-subtitle'>持续活跃中</div>

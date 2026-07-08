@@ -10,7 +10,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
 }
-.welcome-avatar {
+.welcome-avatar { object-fit: cover; border-radius: 50%;
   font-size: 40px;
   width: 56px;
   height: 56px;
@@ -198,7 +198,7 @@
   transition: all var(--transition-fast);
 }
 .feed-item:hover { border-color: var(--border-accent); }
-.feed-avatar {
+.feed-avatar { object-fit: cover; border-radius: 50%;
   font-size: 24px;
   width: 44px;
   height: 44px;

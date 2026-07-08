@@ -81,7 +81,7 @@ function DashboardPage() {
     <div className='dashboard-page'>
       <div className='container'>
         <div className='dashboard-welcome'>
-          <div className='welcome-avatar'>{user?.avatar}</div>
+          <img className='welcome-avatar' src={user?.avatar} alt='' />
           <div>
             <h2 className='welcome-title'>你好，{user?.displayName} 💪</h2>
             <p className='welcome-subtitle'>今天也要坚持锻炼哦！</p>
@@ -257,7 +257,7 @@ function DashboardPage() {
               const friend = item.userInfo
               return (
                 <div key={item.id} className='feed-item'>
-                  <div className='feed-avatar'>{friend?.avatar}</div>
+                  <img className='feed-avatar' src={friend?.avatar} alt='' />
                   <div className='feed-content'>
                     <div className='feed-header'>
                       <span className='feed-name'>{friend?.displayName}</span>
