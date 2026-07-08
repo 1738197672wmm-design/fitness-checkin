@@ -244,7 +244,7 @@
 @media (max-width: 768px) {
   .dashboard-page { padding: 80px 0 40px; }
   .dashboard-welcome { flex-direction: row; gap: 14px; padding: 20px; }
-  .welcome-avatar { font-size: 32px; width: 48px; height: 48px; }
+  .welcome-avatar { width: 48px; height: 48px; }
   .welcome-title { font-size: 18px; }
   .dashboard-today { grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .today-card { padding: 16px 10px; }
@@ -264,7 +264,7 @@
   .dashboard-tabs { width: 100%; overflow-x: auto; }
   .tab-btn { flex: 1; text-align: center; font-size: 13px; padding: 10px 12px; white-space: nowrap; }
   .feed-item { padding: 14px; }
-  .feed-avatar { font-size: 22px; width: 40px; height: 40px; }
+  .feed-avatar { width: 40px; height: 40px; }
 }
 
 
@@ -518,7 +518,7 @@
   .table-row { min-width: 440px; padding: 10px 14px; font-size: 12px; }
   .table-header { font-size: 11px; }
   .feed-item { flex-direction: column; gap: 8px; padding: 12px; }
-  .feed-avatar { width: 36px; height: 36px; font-size: 18px; }
+  .feed-avatar { width: 36px; height: 36px; }
   .feed-text { font-size: 13px; }
   .feed-milestone { font-size: 13px; padding: 6px 12px; }
 

@@ -88,18 +88,7 @@ function LeaderboardPage() {
           </div>
         ) : (
           <>
-            {rankings.length > 0 && (
-              <div className='leaderboard-podium'>
-                {rankings.slice(0, 3).map((user, i) => (
-                  <div key={user.id} className={'podium-item rank-' + (i + 1)}>
-                    <div className='podium-medal'>{medals[i]}</div>
-                    <img className='podium-avatar' src={user.avatar} alt='' />
-                    <div className='podium-name'>{user.displayName}</div>
-                    <div className='podium-value'>{getValue(user)}{metricUnits[metric]}</div>
-                  </div>
-                ))}
-              </div>
-            )}
+            
 
             <div className='leaderboard-list'>
               {rankings.map((user, i) => (
